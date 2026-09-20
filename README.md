@@ -1,46 +1,61 @@
-# 8×8 Synchronous FIFO Design and Verification using Verilog
+# Synchronous FIFO – Verilog RTL Design & Verification
 
 ## Project Overview
 
-Designed and verified an 8×8 synchronous FIFO (First-In First-Out) buffer using Verilog RTL.
+This project implements and verifies a synchronous FIFO (First-In First-Out) memory using Verilog.
 
-The design uses a memory array, independent read and write pointers, an occupancy counter, and full/empty status flags. A self-checking Verilog testbench was developed to verify normal operations and corner cases through simulation.
+The FIFO is designed with:
 
----
+- 8-bit data width
+- 8-word storage depth
+- Separate read and write pointers
+- Occupancy counter
+- Full and empty status flags
+- Synchronous reset
+- Self-checking verification testbench
 
-## FIFO Specifications
-
-| Parameter | Specification |
-|-----------|---------------|
-| FIFO Type | Synchronous FIFO |
-| Data Width | 8 bits |
-| FIFO Depth | 8 words |
-| Memory Size | 8 × 8 |
-| Read Pointer | 3-bit |
-| Write Pointer | 3-bit |
-| Occupancy Counter | 4-bit |
-| Full Flag | Yes |
-| Empty Flag | Yes |
-| Reset | Synchronous |
-| HDL | Verilog |
-| Simulator | Icarus Verilog |
-| Waveform Viewer | GTKWave |
+The project focuses on RTL design, memory organization, pointer management, status flags, and corner-case verification.
 
 ---
 
 ## Architecture
 
-The FIFO consists of the following main components:
+### FIFO Specifications
 
-- 8 × 8 memory array
-- Independent write pointer
-- Independent read pointer
-- FIFO occupancy counter
-- Full status flag
-- Empty status flag
-- Synchronous reset
+| Parameter | Value |
+|---|---:|
+| Data Width | 8 bits |
+| FIFO Depth | 8 words |
+| Address Width | 3 bits |
+| Counter Width | 4 bits |
+| Clock | Synchronous |
+| Reset | Synchronous |
 
-### FIFO Operation
+### Main Components
+
+1. **Memory Array**
+   - Stores eight 8-bit data values.
+
+2. **Write Pointer**
+   - Points to the location where the next data item will be written.
+
+3. **Read Pointer**
+   - Points to the location from which the next data item will be read.
+
+4. **Occupancy Counter**
+   - Tracks the number of data elements currently stored in the FIFO.
+
+5. **Full Flag**
+   - Asserted when the FIFO contains eight data elements.
+
+6. **Empty Flag**
+   - Asserted when the FIFO contains zero data elements.
+
+---
+
+## FIFO Operation
+
+### Write Operation
 
 Data is written into the memory when:
 
