@@ -23,7 +23,7 @@ The project focuses on RTL design, memory organization, pointer management, stat
 ### FIFO Specifications
 
 | Parameter | Value |
-|---|---:|
+|---|---|
 | Data Width | 8 bits |
 | FIFO Depth | 8 words |
 | Address Width | 3 bits |
@@ -63,3 +63,173 @@ Data is written into the memory when:
 wr_en = 1
 and
 full = 0
+```
+
+The write pointer advances after every valid write operation.
+
+### Read Operation
+
+Data is read from the memory when:
+
+```text
+rd_en = 1
+and
+empty = 0
+```
+
+The read pointer advances after every valid read operation.
+
+### Simultaneous Read and Write
+
+The FIFO supports simultaneous read and write operations in the same clock cycle.
+
+When both operations are valid:
+
+- Write pointer advances
+- Read pointer advances
+- FIFO occupancy count remains unchanged
+- Data can be written and read in the same clock cycle
+
+---
+
+## Verification
+
+The testbench verifies the following scenarios:
+
+- Reset operation
+- FIFO empty condition
+- Data write operation
+- Data read operation
+- FIFO full condition
+- Write attempt when FIFO is full
+- Read operation after FIFO becomes full
+- Simultaneous read and write
+- Reset during FIFO operation
+- Full and empty flag transitions
+
+The testbench is self-checking and reports PASS/FAIL results.
+
+---
+
+## Simulation Results
+
+The FIFO was simulated using Icarus Verilog.
+
+Example verification results:
+
+```text
+PASS: Reset successful
+PASS: EMPTY flag asserted
+PASS: FULL flag asserted
+PASS: Write blocked when FULL
+PASS: FULL cleared after read
+PASS: Simultaneous read returned correct data 0xA1
+PASS: FIFO count remains 7
+PASS: Reset during operation successful
+
+========================================
+       FIFO VERIFICATION SUMMARY
+========================================
+RESULT : PASS
+ERRORS : 0
+========================================
+
+FIFO VERIFICATION COMPLETED
+```
+
+---
+
+## Waveform
+
+The FIFO simulation waveform was analyzed using GTKWave.
+
+The waveform demonstrates:
+
+- Clock and reset behavior
+- Write and read enable signals
+- Input and output data
+- Read and write pointer movement
+- FIFO occupancy count
+- Full and empty flag transitions
+
+### GTKWave Simulation
+
+![FIFO Simulation Waveform](docs/fifo_waveform.png)
+
+---
+
+## Concepts Demonstrated
+
+This project demonstrates practical understanding of:
+
+- RTL Design
+- Synchronous FIFO Architecture
+- Memory Arrays
+- Read/Write Pointers
+- Counters
+- Status Flags
+- Circular Buffer Operation
+- Synchronous Reset
+- Data Ordering
+- Corner-Case Verification
+- Self-Checking Testbenches
+- Simulation Waveform Analysis
+
+---
+
+## Project Structure
+
+```text
+SYNCHRONOUS FIFO/
+├── docs/
+│   └── fifo_waveform.png
+├── rtl/
+│   └── fifo.v
+├── tb/
+│   └── fifo_tb.v
+├── .gitignore
+└── README.md
+```
+
+---
+
+## How to Run
+
+### 1. Compile
+
+```bash
+iverilog -g2012 -s fifo_tb -o sim/fifo_tb.vvp rtl/fifo.v tb/fifo_tb.v
+```
+
+### 2. Run Simulation
+
+```bash
+vvp sim/fifo_tb.vvp
+```
+
+### 3. Open Waveform
+
+```bash
+gtkwave sim/fifo.vcd
+```
+
+---
+
+## Tools Used
+
+- Verilog
+- Icarus Verilog
+- GTKWave
+- VS Code
+- Git
+- GitHub
+
+---
+
+## Author
+
+**Devi Sri K**
+
+Electronics and Communication Engineering
+
+**Focus Areas:** RTL Design, Verilog, Digital Electronics, VLSI Verification
