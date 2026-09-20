@@ -1,5 +1,6 @@
 `timescale 1ns/1ps
 module fifo_tb;
+integer error_count;
     reg clk;
     reg rst;
     reg wr_en;
@@ -36,6 +37,7 @@ module fifo_tb;
         wr_en   = 0;
         rd_en   = 0;
         data_in = 8'h00;
+        error_count = 0;
         // RESET TEST
         $display("================================");
         $display("TEST 1: RESET");
@@ -45,8 +47,10 @@ module fifo_tb;
         rst = 0;
         if (empty == 1 && full == 0)
             $display("PASS: Reset successful");
-        else
+        else begin
             $display("FAIL: Reset failed");
+            error_count = error_count + 1;
+        end
         // WRITE TEST
         $display("");
         $display("================================");
@@ -57,9 +61,11 @@ module fifo_tb;
         write_data(8'h33);
         write_data(8'h44);
         if (empty == 0)
-            $display("PASS: FIFO contains data");
-        else
-            $display("FAIL: FIFO incorrectly empty");
+          $display("PASS: FIFO contains data");
+        else begin
+           $display("FAIL: FIFO incorrectly empty");
+           error_count = error_count + 1;
+        end
         // READ TEST
         $display("");
         $display("================================");
@@ -76,8 +82,10 @@ module fifo_tb;
         $display("================================");
         if (empty == 1)
             $display("PASS: EMPTY flag asserted");
-        else
+        else begin
             $display("FAIL: EMPTY flag not asserted");
+            error_count = error_count + 1;
+        end
         // FILL FIFO
         $display(" ");
         $display("================================");
@@ -93,8 +101,10 @@ module fifo_tb;
         write_data(8'hA7);
         if (full == 1)
             $display("PASS: FULL flag asserted");
-        else
+        else begin
             $display("FAIL: FULL flag not asserted");
+            error_count = error_count + 1;
+        end    
         // WRITE WHEN FULL
         $display("");
         $display("================================");
@@ -108,8 +118,10 @@ module fifo_tb;
         wr_en = 0;
         if (full == 1)
             $display("PASS: Write blocked when FULL");
-        else
+        else begin
             $display("FAIL: FIFO full protection failed");
+            error_count = error_count + 1;
+        end    
         // READ AFTER FULL
         $display("");
         $display("================================");
@@ -118,8 +130,10 @@ module fifo_tb;
         read_data(8'hA0);
         if (full == 0)
             $display("PASS: FULL cleared after read");
-        else
+        else begin
             $display("FAIL: FULL did not clear"); 
+            error_count = error_count + 1;
+        end    
 // SIMULTANEOUS READ/WRITE
 $display("");
 $display("================================");
@@ -135,18 +149,23 @@ wr_en = 0;
 rd_en = 0;
 if (data_out == 8'hA1)
     $display("PASS: Simultaneous read returned correct data 0xA1");
-else
+else begin
     $display(
         "FAIL: Simultaneous read expected 0xA1, got 0x%h",
         data_out
     );
+    error_count = error_count + 1;
+end    
 if (uut.count == 7)
     $display("PASS: FIFO count remains 7");
-else
+else begin
     $display(
         "FAIL: FIFO count expected 7, got %0d",
         uut.count
     );
+    error_count = error_count + 1;
+    end
+    $display("================================");
         $display("TEST 9: RESET DURING OPERATION");
         $display("================================");
         write_data(8'h99);
@@ -157,15 +176,28 @@ else
         rst = 0;
         if (empty == 1 && full == 0)
             $display("PASS: Reset during operation successful");
-        else
+        else begin
             $display("FAIL: Reset during operation failed");
+            error_count = error_count + 1;
+        end    
         // FINISH
-        $display("");
-        $display("================================");
-        $display("FIFO VERIFICATION COMPLETED");
-        $display("================================");
-        #10;
-        $finish;
+       $display("");
+$display("========================================");
+$display("       FIFO VERIFICATION SUMMARY");
+$display("========================================");
+if (error_count == 0) begin
+    $display("RESULT : PASS");
+    $display("ERRORS : %0d", error_count);
+end
+else begin
+    $display("RESULT : FAIL");
+    $display("ERRORS : %0d", error_count);
+end
+$display("========================================");
+$display("FIFO VERIFICATION COMPLETED");
+
+#10;
+$finish;
     end
     // WRITE TASK
     task write_data;
