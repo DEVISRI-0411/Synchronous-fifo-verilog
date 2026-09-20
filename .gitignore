@@ -1,0 +1,11 @@
+# Icarus Verilog compiled files
+*.vvp
+
+# Waveform files
+*.vcd
+
+# Temporary files
+*.log
+
+# VS Code settings
+.vscode/
